@@ -271,9 +271,7 @@ class Serializer(t.Generic[_TSerialized]):
                     payload.decode("utf-8"), **self.deserializer_kwargs
                 )  # type: ignore[arg-type]
 
-            return use_serializer.loads(
-                payload, **self.deserializer_kwargs
-            )  # type: ignore[arg-type]
+            return use_serializer.loads(payload, **self.deserializer_kwargs)  # type: ignore[arg-type]
         except Exception as e:
             raise BadPayload(
                 "Could not load the payload because an exception"
