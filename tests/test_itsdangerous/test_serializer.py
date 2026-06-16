@@ -152,6 +152,24 @@ class TestSerializer:
 
         assert serializer.loads(serializer.dumps({(): 1})) == {}
 
+    def test_deserializer_kwargs(self, serializer_factory):
+        class KwargsSerializer:
+            @staticmethod
+            def dumps(obj, *, dump_value=False):
+                return "dumped" if dump_value else "missing"
+
+            @staticmethod
+            def loads(payload, *, load_value=False):
+                return f"{payload}:{load_value}"
+
+        serializer = serializer_factory(
+            serializer=KwargsSerializer,
+            serializer_kwargs={"dump_value": True},
+            deserializer_kwargs={"load_value": True},
+        )
+
+        assert serializer.loads(serializer.dumps(None)) == "dumped:True"
+
     def test_fallback_signers(self, serializer_factory, value: Any):
         serializer = serializer_factory(signer_kwargs={"digest_method": hashlib.sha256})
         signed = serializer.dumps(value)
